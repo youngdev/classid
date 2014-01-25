@@ -1,4 +1,6 @@
 <?php echo $header; ?>
+	<script type="text/javascript" src="<?php echo base_url("scripts/custom_scripts/form_validator.js"); ?>"></script>
+	<div id="fb-root"></div>
 	<script>
 		$(window).load(function() {
 			var navbar_toggle = 1;
@@ -30,16 +32,27 @@
 					event.preventDefault();
 				});
 			});
-			
+
 			$('#signin').popover({
 				title	:	'Sign In',
 				animation:	true,
 				html	:	true,
 				placement:	'bottom',
-				content	:	'<p class="float_clear"><img src="images/facebook.gif" loginType="facebook" style="width:120px;float: left;margin-right: 5px;" /><img loginType="twitter" src="images/twitter.gif" style="width:120px;float: left;" /></p>' +
+				content	:	'<form id="user_login">'+
+							'<p class="float_clear"><a href="#" loginType="facebook"><img src="images/facebook.gif" style="width:120px;float: left;margin-right: 5px;" /></a>'+
+							'<a href="#" loginType="twitter"><img src="images/twitter.gif" style="width:120px;float: left;" /></a></p>' +
 							'<p><input id="txt_username" type="text" class="form-control required" placeholder="Username"/></p>' +
 							'<p><input id="txt_password" type="password" class="form-control required" placeholder="Password" /></p>' +
-							'<p><button type="submit" class="btn btn-default" id="btn_signin">Submit</button> <label style="font-size: 8px;"><input type="checkbox"> Stay logged in</input></label></p>'
+							'<p><button type="submit" class="btn btn-default" id="btn_signin">Submit</button> <label style="font-size: 8px;"><input type="checkbox"> Stay logged in</input></label></p></form>'
+			});
+			
+			$('#signin').click(function(e)
+			{
+				e.preventDefault();
+			})
+			
+			$('#signin').on('show.bs.popover', function() {
+				$('#register').popover('hide');
 			});
 			
 			$('#register').popover({
@@ -47,18 +60,42 @@
 				animation:	true,
 				html	:	true,
 				placement:	'bottom',
-				content	:	'<p class="float_clear" style="width:250px"><img src="images/facebook.gif" loginType="facebook" style="width:120px;float: left;margin-right: 5px;" /><img src="images/twitter.gif" loginType="twitter" style="width:120px;float: left;" /></p>' +
-							'<p><input type="text" class="form-control" placeholder="Name"/></p>' +
-							'<p><input type="text" class="form-control" placeholder="Email" /></p>' +
-							'<p><input type="password" class="form-control" placeholder="Password" /></p>' +
-							'<p><input type="password" class="form-control" placeholder="Re-enter Password" /></p>' +
-							'<p><input type="text" class="form-control" placeholder="Address" /></p>' +
-							'<p><input type="text" class="form-control" placeholder="Nationality" /></p>' +
-							'<p><button type="submit" class="btn btn-default">Register</button> <label style="font-size: 8px;"><input type="checkbox"> I accept the Terms & Conditions</input></label></p>'
+				content	:	'<form id="user_registration" action="<?php echo $base_url; ?>signup?t=user" method="post"><p class="float_clear" style="width:250px"><a href="#" loginType="facebook"><img src="images/facebook.gif" style="width:120px;float: left;margin-right: 5px;" /></a>'+ 
+							'<a href="#" loginType="twitter"><img src="images/twitter.gif" style="width:120px;float: left;" /></a></p>' +
+							'<p><input type="text" name="firstname" required-type="text" class="form-control required" placeholder="First Name"/></p>' +
+							'<p><input type="text" name="middlename" required-type="text" class="form-control required" placeholder="Middle Name"/></p>' +
+							'<p><input type="text" name="lastname" required-type="text" class="form-control required" placeholder="Last Name"/></p>' +
+							'<p><input type="text" name="email" required-type="email" class="form-control required" placeholder="Email" /></p>' +
+							'<p><input type="password" name="password" required-type="text" class="form-control required" placeholder="Password" /></p>' +
+							'<p><input type="password" name="confirm_password" required-type="text" class="form-control required" placeholder="Re-enter Password" /></p>' +
+							'<p><input type="text" name="address" required-type="text" class="form-control required" placeholder="Address" /></p>' +
+							'<p><input type="text" name="nationality" required-type="text" class="form-control required" placeholder="Nationality" /></p>' +
+							'<p><button type="submit" class="btn btn-default">Register</button> <label style="font-size: 8px;"><input type="checkbox"> I accept the Terms & Conditions</input></label></p></form>'
+			});
+			
+			$('#register').click(function(e)
+			{
+				e.preventDefault();
+			})
+			
+			$('#register').on('show.bs.popover', function() {
+				$('#signin').popover('hide');
 			});
 		});
 		
 		$(document).ready(function(){
+			$('body').delegate('#user_registration', 'submit', function(e){
+				error = form_validator(this);
+				if(error)
+				{
+					e.preventDefault();
+					return false;
+				}
+			});
+			$('body').delegate('#user_login', 'submit', function(e){
+				e.preventDefault();
+			});
+			
 			$('body').delegate('#btn_signin','click',function(){
 				if(field_validation('list_signin')){
 					$.ajax({
@@ -66,13 +103,13 @@
 						type:'post',
 						beforeSend:function(){},
 						data:{
-							username:$('#txt_username').val(),
+							email:$('#txt_username').val(),
 							password:$('#txt_password').val()
 						},
-						success:function(html){
-							if(html){
-								alert('Login Successful');
-								window.location = base_url;
+						dataType: 'JSON',
+						success:function(result){
+							if(result.status){
+								window.location = result.redirect;
 							}else{
 								alert('Login Failed');
 							}
@@ -80,10 +117,72 @@
 					});
 				}
 			});
+			
+			// Dunno why, but FB's docs told me to set up cache to true
+			$.ajaxSetup({ cache: true });
+			
+			/**
+			 * I thought of putting all Facebook related logic within the callback of getScript
+			 * It just makes sense that we would only enable FB related stuff when the fetching
+			 * FB's javascript is a success :D 
+			 */
+			$.getScript('//connect.facebook.net/en_UK/all.js', function(data, textStatus, jqxhr){
+			    FB.init({
+					appId: '234024233435491',
+					status	: true,					// Facebook login status
+					cookie	: true,					// FB loves cookies
+					xfbml	: true					// parse XFBML
+			    });
+			    
+				$('body').on('click', 'a[loginType=facebook]', function(){
+					FB.login(function(res)
+					{
+						fb_email = '';
+						if(res.authResponse)
+						{
+					  		FB.api('/me', function(res)
+					  		{
+					  			fb_email = res.email
+					  		});
+			    			
+			    			if (fb_email != '')
+			    			{
+					    		// But le-first check if user is registered on local database :D
+					    		$.ajax({
+					    			url		: '<?php echo $base_url; ?>authentication/login',
+					    			type	: 'POST',
+					    			data	: { 
+					    				is_social	: 'true',
+					    				email		: fb_email
+					    			},
+					    			dataType: 'JSON',
+					    			success	: function(e)
+					    			{
+					    				if(e.status == false && e.redirect != undefined)
+					    				{
+					    					window.location = e.redirect;
+					    				}
+					    				else if(e.status == true)
+					    				{
+					    					location.reload();
+					    				}
+					    			}
+					    		});
+			    			}
+						}
+					}, {
+						scope	: 'email'
+					});
+				});
+			}).fail(function(jqxhr, settings, exception)
+			{
+				$('.error_msg').append('There is an error on loading Facebook API [STATUS: ' + jqxhr.status + ']').
+				css({left: ($(document).width() / 2) - ($('.alert').width() / 2)}).fadeIn(1000).delay(5000).fadeOut(1000);
+			});
 		});
 	</script>
 	<div class="container container_top">
-		<div class="alert alert-danger fade in"><a class="close" data-dismiss="alert" href="#" aria-hidden="true">&times;</a></div>
+		<div class="alert alert-danger fade in error_msg"><a class="close" data-dismiss="alert" href="#" aria-hidden="true">&times;</a></div>
 		<div class="row title-area">
 			<div class="col-md-4" id="logo_area">
 				<h1 id="logo">

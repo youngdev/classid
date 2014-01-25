@@ -1,5 +1,6 @@
-<?php
-class Base_Controller extends CI_Controller{
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Base_Controller extends CI_Controller {
 
 	public $vars;
 	
@@ -25,5 +26,3 @@ class Base_Controller extends CI_Controller{
 		return $is_logged_in;
 	}
 }
-
-?>

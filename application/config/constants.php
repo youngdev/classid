@@ -39,5 +39,13 @@ define('FOPEN_READ_WRITE_CREATE_STRICT',		'x+b');
 define('P_SIGNUP_HOTEL',	'hotel');
 define('P_SIGNUP_USER',		'user');
 
+define('P_TYPE_USER',		1);
+define('P_TYPE_HOTEL',		2);
+
+define('P_MSG_STS_UNREAD',	1);
+define('P_MSG_STS_READ',	2);
+define('P_MSG_STS_DELETED',	3);
+define('P_MSG_STS_ARCHIVED',4);
+
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */

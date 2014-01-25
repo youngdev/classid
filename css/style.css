@@ -328,6 +328,121 @@ h4#motto {
 	margin-bottom: 10px!important;
 }
 
+.error_msg {
+	display: none;
+}
+
+#profile {
+	font-family: 'Myriad Roman', sans-serif;
+}
+
+#profile #nav {
+	border-bottom: 1px solid #393939;
+	margin-top: 30px;
+}
+
+#profile #nav ul {
+	list-style: none;
+	float: left;
+}
+
+#profile #nav ul li {
+	float: left;
+}
+
+#profile #nav ul li a {
+	color: #797979;
+	padding: 10px 35px;
+	font-size: 16px;
+	float: left;
+	text-decoration: none;
+}
+
+#profile #nav ul li a:hover {
+	color: #999;
+}
+
+#profile #profile_info {
+	color: #494949;
+	border-bottom: 1px solid #393939;
+	padding-bottom: 40px;
+}
+
+#profile #profile_info img {
+	width: 100%;
+}
+
+#profile #profile_info #name {
+	font-size: 26px;
+	font-weight: bold;
+}
+
+#profile #profile_info a {
+	color: #797979;
+	text-decoration: none;
+}
+
+#profile #profile_info a:hover {
+	color: #999;
+}
+
+#profile #statistics {
+	text-align: center;
+	padding-top: 20px;
+	padding-bottom: 10px;
+}
+
+#profile #statistics h3 {
+	font-size: 56px;
+	margin-bottom: 0px;
+}
+
+#profile #viewed_venues .venues {
+	background-color: #B3B3B3;
+	padding: 1px;
+	margin-top: 40px;
+	margin-bottom: 40px;
+	margin-right: 5px;
+}
+
+#profile #viewed_venues .venues .image {
+	background: #FFF;
+	width: 188px;
+	height: 190px;
+	padding: 0px;
+}
+
+#profile #viewed_venues .venues:last-child {
+	margin-right: 0px;
+} 
+
+#profile #viewed_venues .venues .image img {
+	margin: 0px;
+}
+
+#profile #viewed_venues .venues div {
+	font-size: 13px;
+	text-align: center;
+	padding-left: 0px;
+	padding-right: 0px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+#profile #viewed_venues .venues div:nth-child(2),
+#profile #viewed_venues .venues div:nth-child(3) {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+#profile #viewed_venues .venues div:nth-child(2) {
+	text-align: left;
+}
+
+#profile #viewed_venues .venues div:nth-child(3) {
+	text-align: right;
+}
+
 /* Media Queries */
 @media (min-width: 768px) {
 	.main-navbar-title {

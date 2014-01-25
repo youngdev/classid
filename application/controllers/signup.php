@@ -11,8 +11,9 @@ class Signup extends Base_Controller {
 
 	public function __construct (){
 		parent::__construct();
-		$this->load->library('form_validation');
+		$this->load->library(array('form_validation', 'email'));
 		$this->load->helper('form');
+		$this->load->model('user_model');
 		
 		$this->form_validation->set_error_delimiters('<div class="alert alert-danger margin-bottom_10px data-validated">','</div>');
 		$this->basic_information_rules = array(
@@ -76,6 +77,10 @@ class Signup extends Base_Controller {
 					$this->hotel_basic_information();
 			}
 		}
+		elseif($type==P_SIGNUP_USER)
+		{
+			$this->user_registration();	
+		}
 	}
 	
 	private function hotel_basic_information(){
@@ -91,6 +96,96 @@ class Signup extends Base_Controller {
 			redirect('signup/index?t='.P_SIGNUP_HOTEL.'&p='.self::LISTING_PLAN);
 		}
 		
+	}
+
+	private function user_registration(){
+		// Let's reuse rules variable used by hotel signup instead of creating a new variable
+		$this->basic_information_rules = array(
+			array(
+				'field'=>'firstname',
+				'label'=>'First Name',
+				'rules'=>'trim|required'
+			),
+			array(
+				'field'=>'middlename',
+				'label'=>'Middle Name',
+				'rules'=>'trim|required'
+			),
+			array(
+				'field'=>'lastname',
+				'label'=>'Last Name',
+				'rules'=>'trim|required'
+			),
+			array(
+				'field'=>'email',
+				'label'=>'Email',
+				'rules'=>'trim|required|valid_email'
+			),
+			array(
+				'field'=>'password',
+				'label'=>'Password',
+				'rules'=>'trim|required|md5'
+			),
+			array(
+				'field'=>'confirm_password',
+				'label'=>'Re-enter Password',
+				'rules'=>'trim|required|matches[password]|md5'
+			),
+			array(
+				'field'=>'address',
+				'label'=>'Address',
+				'rules'=>'trim|required'
+			),
+			array(
+				'field'=>'nationality',
+				'label'=>'Nationality',
+				'rules'=>'trim|required'
+			)
+		);
+	
+		$this->form_validation->set_rules($this->basic_information_rules);
+		
+		// Run for PHP validation
+		if($this->form_validation->run() == FALSE)
+		{
+			$this->load->view('signup/user/registration',$this->vars);
+		}
+		else 
+		{
+			// Save to database
+			$user_id = $this->user_model->save_user(array(
+				'FirstName'		=> $this->input->post('firstname'),
+				'MiddleName'	=> $this->input->post('middlename'),
+				'LastName '		=> $this->input->post('lastname'),
+				'EmailAddress'	=> $this->input->post('email'),
+				'Password'		=> $this->input->post('password'),
+				'Address'		=> $this->input->post('address'),
+				'Nationality'	=> $this->input->post('nationality'),
+				'Type'			=> P_TYPE_USER
+			));
+			
+			// Send confirmation email (no confirmation link since we don't have that detail on our table)
+			$this->email->from('admin@partyquire.com');
+			$this->email->to($this->input->post('email'));
+			$this->email->subject('[Partyquire] Your registration is successful!');
+			$this->email->message('Congratulations! Your account has been successfully registered!');
+			
+			$this->email->send();
+			
+			if($user_id)
+			{
+				$user_id = base64_encode($user_id);
+				$user_id = str_replace("=", "", $user_id);
+				
+				// Redirect to user's profile page
+				redirect('/user/profile/'.$user_id, 'refresh');
+			}
+			else 
+			{
+				// Redirect to homepage
+				redirect('/main', 'refresh');
+			}
+		}
 	}
 }
 

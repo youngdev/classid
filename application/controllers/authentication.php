@@ -12,12 +12,10 @@ class Authentication extends CI_Controller {
 	}
 	
 	function login(){
-		$user_data = false;
-		$username = $this->input->post('email');
-		$password = md5($this->input->post('password'));
-		
-		// Check if user is logged-in tru facebook
-		$is_social = $this->input->post('is_social');
+		$user_data	= false;
+		$username	= $this->input->post('email');
+		$password	= md5($this->input->post('password'));
+		$is_social	= $this->input->post('is_social');
 		
 		if ($is_social)
 		{
@@ -32,19 +30,23 @@ class Authentication extends CI_Controller {
 			}
 			else
 			{
+				// If not, redirect user to signup page
 				if($this->input->is_ajax_request())
 				{
-					$this->output->set_output(json_encode(array('status'=>false, 'redirect'=>base_url().'authentication/register')));
+					$this->output->set_output(json_encode(array('status'=>false, 'redirect'=>base_url().'signup?t=user')));
+				}
+				else 
+				{
+					redirect('/signup?t=user', 'refresh');
 				}
 				
 				return false;
 			}
 		}
-		
-		// Normal Login procedure
-		if ($username && $password){
+		elseif ($username && $password)
+		{
 			$login_data = array(
-				'Username'=>$username,
+				'EmailAddress'=>$username,
 				'Password'=>$password
 			);
 			$user_data = $this->user_model->authenticate_user($login_data);
@@ -57,13 +59,16 @@ class Authentication extends CI_Controller {
 				'first_name'=>$user_data['FirstName'],
 				'middle_name'=>$user_data['MiddleName'],
 				'last_name'=>$user_data['LastName'],
-				'email_address'=>$user_data['EmailAddres']
+				'email_address'=>$user_data['EmailAddress']
 			);
 			$this->session->set_userdata($session_data);
 
 			if($this->input->is_ajax_request())
 			{
-				$this->output->set_output(json_encode(array('status'=>true)));
+				$this->output->set_output(json_encode(array(
+					'status'=>true,
+					'redirect'=>base_url()."user/profile/".str_replace("=", "", base64_encode($user_data['UserAccountID']))
+				)));
 			}
 
 			return true;
@@ -76,7 +81,7 @@ class Authentication extends CI_Controller {
 		
 		return false;
 	}
-	
+
 	function logout(){
 		$session_data = array(
 			'is_logged_in'=>false
@@ -86,5 +91,5 @@ class Authentication extends CI_Controller {
 	}
 }
 
-/* End of file welcome.php */
-/* Location: ./application/controllers/welcome.php */
+/* End of file authentication.php */
+/* Location: ./application/controllers/authentication.php */
