@@ -17,18 +17,41 @@
 				}
 			});
 			$(function() {
+				var defaultTop = $("div[sectionFor=navigation]").offset().top;
+				var defaultHeight = $("div[sectionFor=navigation]").height();
+				console.log(defaultHeight);
+				if(document.documentElement.scrollTop >= defaultTop)
+				{
+					$("div[sectionFor=navigation]").addClass("navTop");
+				}
+				else
+				{
+					$("div[sectionFor=navigation]").removeClass("navTop");
+				}
+
+				$(window).scroll(function()
+				{
+					if(document.documentElement.scrollTop >= defaultTop)
+					{
+						$("div[sectionFor=navigation]").addClass("navTop");
+					}
+					else
+					{
+						$("div[sectionFor=navigation]").removeClass("navTop");
+					}
+				});
+
 				$('ul.navbar-nav li a').bind('click',function(event){
 					var $anchor = $(this);
+					var scrollTo = $($anchor.attr('href')).offset().top - defaultHeight;
 					
+					scrollTo = $("div[sectionFor=navigation]").hasClass("navTop")?scrollTo:$($anchor.attr('href')).offset().top - (defaultHeight * 2);
+					
+
 					$('html, body').stop().animate({
-						scrollTop: $($anchor.attr('href')).offset().top
+						scrollTop: scrollTo
 					}, 1500,'easeInOutExpo');
-					/*
-					if you don't want to use the easing effects:
-					$('html, body').stop().animate({
-						scrollTop: $($anchor.attr('href')).offset().top
-					}, 1000);
-					*/
+
 					event.preventDefault();
 				});
 			});
@@ -181,7 +204,7 @@
 			});
 		});
 	</script>
-	<div class="container container_top">
+	<div class="container container_top" id="home">
 		<div class="alert alert-danger fade in error_msg"><a class="close" data-dismiss="alert" href="#" aria-hidden="true">&times;</a></div>
 		<div class="row title-area">
 			<div class="col-md-4" id="logo_area">
@@ -208,30 +231,34 @@
 				</div>
 			</div>
 		</div>
-		<div class="row">
-			<nav class="navbar navbar-default" id="top-nav" role="navigation">
-			  <!-- Home and toggle get grouped for better mobile display -->
-			  <div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-main-navbar-collapse-1">
-				  <span class="sr-only">Toggle navigation</span>
-				  <span class="icon-bar"></span>
-				  <span class="icon-bar"></span>
-				  <span class="icon-bar"></span>
-				</button>
-				<a class="navbar-brand main-navbar-title" href="#"><span class="violet">Party</span><span class="orange">quire</span></a>
-			  </div>
+	</div>
+	<div sectionFor="navigation">
+		<div class="container">
+			<div class="row">
+				<nav class="navbar navbar-default" id="top-nav" role="navigation">
+				  <!-- Home and toggle get grouped for better mobile display -->
+				  <div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-main-navbar-collapse-1">
+					  <span class="sr-only">Toggle navigation</span>
+					  <span class="icon-bar"></span>
+					  <span class="icon-bar"></span>
+					  <span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand main-navbar-title" href="#"><span class="violet">Party</span><span class="orange">quire</span></a>
+				  </div>
 
-			  <!-- Collect the nav links, forms, and other content for toggling -->
-			  <div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
-				<ul class="nav navbar-nav">
-				  <li class="active"><a href="#">Home</a></li>
-				  <li><a href="#howitworks">How it works</a></li>
-				  <li><a href="#features">Features</a></li>
-				  <li><a href="#venues">Featured Venues</a></li>
-				  <li><a href="#aboutus">About Us</a></li>
-				</ul>
-			  </div><!-- /.navbar-collapse -->
-			</nav>
+				  <!-- Collect the nav links, forms, and other content for toggling -->
+				  <div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
+					<ul class="nav navbar-nav">
+					  <li class="active"><a href="#home">Home</a></li>
+					  <li><a href="#howitworks">How it works</a></li>
+					  <li><a href="#features">Features</a></li>
+					  <li><a href="#venues">Featured Venues</a></li>
+					  <li><a href="#aboutus">About Us</a></li>
+					</ul>
+				  </div><!-- /.navbar-collapse -->
+				</nav>
+			</div>
 		</div>
 	</div>
 	<div id="slider">
@@ -244,119 +271,140 @@
 			</ul>
 		</div>
 	</div>
-	<div class="container">
-		<div class="row">
-			<div class="col-md-3" id="quick-search">
-				<div class="heading"><img src="images/search_icon.png"> Search</div>
-				<form>
-					<div><input type="text" id="cities" class="form-control" placeholder="All Cities"></div>
-					<div><input type="text" id="events" class="form-control" placeholder="Event Type"></div>
-					<div><button type="button">Submit</button></div>
-				</form>
+	<div sectionFor="quick-search">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-3" id="quick-search">
+					<div class="heading"><img src="images/search_icon.png"> Search</div>
+					<form>
+						<div><input type="text" id="cities" class="form-control" placeholder="All Cities"></div>
+						<div><input type="text" id="events" class="form-control" placeholder="Event Type"></div>
+						<div><button type="button">Submit</button></div>
+					</form>
+				</div>
 			</div>
 		</div>
 	</div>
-	<div class="container">
-		<div class="row mottos">
-			<div class="col-md-4">
-				<img src="images/stress.gif"><h3>DROP THE STRESS</h3>
-				<p>No need to search site to site or visit hotels and restaurants each one and each time just to know their packages and inquire. Drop the stress and <span class="orange">you can find it all here.</span></p>
-			</div>
-			<div class="col-md-4">
-				<img src="images/rocket.gif"><h3>NO ROCKET SCIENCE</h3>
-				<p>Designed to keep your <span class="orange">searching and navigation easy</span>. Flexible for any type of users.</p>
-			</div>
-			<div class="col-md-4">
-				<img src="images/time.gif"><h3>A REAL TIME SAVER</h3>
-				<p>Partyquire heaped all your favorite <span class="orange">Hotel and Restaurant Party Venues</span> with their updated packages at the convenience of your home.</p>
-			</div>
-		</div>
-		<div class="row" id="howitworks">
-			<div class="col-md-8 col-md-offset-2">
-				<h2>HOW IT WORKS</h2>
-			</div>
-			<div class="col-md-8 col-md-offset-2">
-				<p>You're one step away to start Partyquiring and <span class="orange">Find the Perfect Venue for your Awesome Event!<br/>Leave out the stress to us!</span></p>
-			</div>
-			<div class="col-md-8 col-md-offset-2">
-				<h3>Just Register and start Partyquiring!</h3>
-			</div>
-			<div class="col-md-4 col-md-offset-2" id="login_with">
-				<p><a href="#" loginType="facebook"><img src="images/facebook.gif" /></a></p>
-				<p><a href="#" loginType="twitter"><img src="images/twitter.gif" /></a></p>
-			</div>
-			<div class="col-md-4" id="home_register">
-				<form>
-					<div><input type="text" placeholder="Name"></div>
-					<div><input type="text" placeholder="Email Address"></div>
-					<div><input type="text" placeholder="Password"></div>
-					<div><button type="button">Submit</button></div>
-				</form>
-			</div>
-		</div>
-		<div class="row" id="features">
-			<div class="col-md-12">
-				<div class="row">
-					<div class="col-md-12 text-center">
-						<h4>POWERFUL FEATURES</h4>
-					</div>
+	<div sectionFor="mottos">
+		<div class="container">
+			<div class="row mottos">
+				<div class="col-md-4">
+					<img src="images/stress.gif"><h3>DROP THE STRESS</h3>
+					<p>No need to search site to site or visit hotels and restaurants each one and each time just to know their packages and inquire. Drop the stress and <span class="orange">you can find it all here.</span></p>
 				</div>
-				<div class="row">
-					<div class="col-md-5 col-md-offset-1">
-						<img src="images/userprofile.gif" />Customize your User Profile
-					</div>
-					<div class="col-md-5 col-md-offset-1">
-						<img src="images/share.gif" />Share or Refer to a Friend
-					</div>
+				<div class="col-md-4">
+					<img src="images/rocket.gif"><h3>NO ROCKET SCIENCE</h3>
+					<p>Designed to keep your <span class="orange">searching and navigation easy</span>. Flexible for any type of users.</p>
 				</div>
-				<div class="row">
-					<div class="col-md-5 col-md-offset-1">
-						<img src="images/requestquote.gif" />Request for a Quote
-					</div>
-					<div class="col-md-5 col-md-offset-1">
-						<img src="images/viewvenues.gif" />View the Venue's Gallery
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-5 col-md-offset-1">
-						<img src="images/message.gif" />Send message directly to the Venue
-					</div>
-					<div class="col-md-5 col-md-offset-1">
-						<img src="images/venuerates.gif" />Compare Venue's Rates
-					</div>
+				<div class="col-md-4">
+					<img src="images/time.gif"><h3>A REAL TIME SAVER</h3>
+					<p>Partyquire heaped all your favorite <span class="orange">Hotel and Restaurant Party Venues</span> with their updated packages at the convenience of your home.</p>
 				</div>
 			</div>
 		</div>
-		<div class="row" id="venues">
-			<div class="col-md-12">
-				<div class="row">
-					<div class="col-md-8 col-md-offset-2 text-center">
-						<h4>FEATURES VENUES</h4>
-					</div>
+	</div>
+	<div sectionFor="howitworks">
+		<div class="container">
+			<div class="row" id="howitworks">
+				<div class="col-md-8 col-md-offset-2">
+					<h2>HOW IT WORKS</h2>
 				</div>
-				<div class="row">
-					<div class="col-md-12 text-center">
-						PLACE HOLDER (Will be changed to a slider)
+				<div class="col-md-8 col-md-offset-2">
+					<p>You're one step away to start Partyquiring and <span class="orange">Find the Perfect Venue for your Awesome Event!<br/>Leave out the stress to us!</span></p>
+				</div>
+				<div class="col-md-8 col-md-offset-2">
+					<h3>Just Register and start Partyquiring!</h3>
+				</div>
+				<div class="col-md-4 col-md-offset-2" id="login_with">
+					<p><a href="#" loginType="facebook"><img src="images/facebook.gif" /></a></p>
+					<p><a href="#" loginType="twitter"><img src="images/twitter.gif" /></a></p>
+				</div>
+				<div class="col-md-4" id="home_register">
+					<form>
+						<div><input type="text" placeholder="Name"></div>
+						<div><input type="text" placeholder="Email Address"></div>
+						<div><input type="text" placeholder="Password"></div>
+						<div><button type="button">Submit</button></div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div sectionFor="features">
+		<div class="container">
+			<div class="row" id="features">
+				<div class="col-md-12">
+					<div class="row">
+						<div class="col-md-12 text-center">
+							<h4>POWERFUL FEATURES</h4>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-5 col-md-offset-1">
+							<img src="images/userprofile.gif" />Customize your User Profile
+						</div>
+						<div class="col-md-5 col-md-offset-1">
+							<img src="images/share.gif" />Share or Refer to a Friend
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-5 col-md-offset-1">
+							<img src="images/requestquote.gif" />Request for a Quote
+						</div>
+						<div class="col-md-5 col-md-offset-1">
+							<img src="images/viewvenues.gif" />View the Venue's Gallery
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-5 col-md-offset-1">
+							<img src="images/message.gif" />Send message directly to the Venue
+						</div>
+						<div class="col-md-5 col-md-offset-1">
+							<img src="images/venuerates.gif" />Compare Venue's Rates
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		<div class="row" id="aboutus">
-			<div class="col-md-6" id="mascot">
-				<img src="images/mascot.gif" />
-				<h3>CRAFTED WITH LOVE</h3>
-				<div class="boxed">
-					by Partyquire's Team
-				</div>
-			</div>
-			<div class="col-md-6">
-				<h4>ABOUT US</h4>
-				<div>
-					<p>At Partyquire our  vision is  to develop your life events to be in perfect scenery focusing mainly in UAE region.</p>
-					<p>With the growing supply of Hotels and Restaurants , one of the issues of local residents and expats is looking for  a perfect venues for their once in a lifetime events and party celebrations.</p>
-					<p>Partyquire is your first Party Venue Partner that will showcase the different packages of hotel and restaurants to ease the stress of hunting and inquiring.</p>
-					<p>Whether its for your birthday, wedding, eid celebration, iftar, a simple brunch, a seminar or a meeting, Partyquire is here to help. </p>
+	</div>
+	<div sectionFor="venues">
+		<div class="container">
+			<div class="row" id="venues">
+				<div class="col-md-12">
+					<div class="row">
+						<div class="col-md-8 col-md-offset-2 text-center">
+							<h4>FEATURES VENUES</h4>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12 text-center">
+							PLACE HOLDER (Will be changed to a slider)
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
+	</div>
+	<div sectionFor="aboutus">
+		<div class="container">
+			<div class="row" id="aboutus">
+				<div class="col-md-6" id="mascot">
+					<img src="images/mascot.gif" />
+					<h3>CRAFTED WITH LOVE</h3>
+					<div class="boxed">
+						by Partyquire's Team
+					</div>
+				</div>
+				<div class="col-md-6">
+					<h4>ABOUT US</h4>
+					<div>
+						<p>At Partyquire our  vision is  to develop your life events to be in perfect scenery focusing mainly in UAE region.</p>
+						<p>With the growing supply of Hotels and Restaurants , one of the issues of local residents and expats is looking for  a perfect venues for their once in a lifetime events and party celebrations.</p>
+						<p>Partyquire is your first Party Venue Partner that will showcase the different packages of hotel and restaurants to ease the stress of hunting and inquiring.</p>
+						<p>Whether its for your birthday, wedding, eid celebration, iftar, a simple brunch, a seminar or a meeting, Partyquire is here to help. </p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 <?php echo $footer; ?>
