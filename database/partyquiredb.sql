@@ -1,13 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 3.3.9
+-- version 4.0.4.1
 -- http://www.phpmyadmin.net
 --
--- Host: localhost
--- Generation Time: Jan 03, 2014 at 02:11 PM
--- Server version: 5.5.8
--- PHP Version: 5.3.5
+-- Host: 127.0.0.1
+-- Generation Time: Jan 31, 2014 at 04:53 PM
+-- Server version: 5.5.32
+-- PHP Version: 5.4.19
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -18,10 +19,8 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 --
 -- Database: `partyquiredb`
 --
-
-
-CREATE DATABASE partyquiredb;
-USE partyquiredb;
+CREATE DATABASE IF NOT EXISTS `partyquiredb` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `partyquiredb`;
 
 -- --------------------------------------------------------
 
@@ -29,7 +28,6 @@ USE partyquiredb;
 -- Table structure for table `tblactivities`
 --
 
-DROP TABLE IF EXISTS `tblactivities`;
 CREATE TABLE IF NOT EXISTS `tblactivities` (
   `ActivityID` int(6) unsigned NOT NULL AUTO_INCREMENT,
   `ActivityName` varchar(255) NOT NULL,
@@ -50,10 +48,29 @@ INSERT INTO `tblactivities` (`ActivityID`, `ActivityName`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tblamenities`
+--
+
+CREATE TABLE IF NOT EXISTS `tblamenities` (
+  `AmenityID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `AmenityName` varchar(50) CHARACTER SET latin1 NOT NULL,
+  PRIMARY KEY (`AmenityID`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+
+--
+-- Dumping data for table `tblamenities`
+--
+
+INSERT INTO `tblamenities` (`AmenityID`, `AmenityName`) VALUES
+(1, 'A/V Equipment'),
+(2, 'Rooftop');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tblbookings`
 --
 
-DROP TABLE IF EXISTS `tblbookings`;
 CREATE TABLE IF NOT EXISTS `tblbookings` (
   `BookingID` int(14) unsigned NOT NULL AUTO_INCREMENT,
   `VenueID` int(12) unsigned NOT NULL,
@@ -69,18 +86,12 @@ CREATE TABLE IF NOT EXISTS `tblbookings` (
   UNIQUE KEY `VenueID` (`VenueID`,`StartDate`,`StartTime`,`EndDate`,`EndTime`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Used to log venue bookings' AUTO_INCREMENT=1 ;
 
---
--- Dumping data for table `tblbookings`
---
-
-
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `tblcities`
 --
 
-DROP TABLE IF EXISTS `tblcities`;
 CREATE TABLE IF NOT EXISTS `tblcities` (
   `CityID` int(8) unsigned NOT NULL AUTO_INCREMENT,
   `CityName` varchar(255) NOT NULL,
@@ -102,7 +113,6 @@ INSERT INTO `tblcities` (`CityID`, `CityName`) VALUES
 -- Table structure for table `tbleventtypes`
 --
 
-DROP TABLE IF EXISTS `tbleventtypes`;
 CREATE TABLE IF NOT EXISTS `tbleventtypes` (
   `EventTypeID` int(4) unsigned NOT NULL AUTO_INCREMENT,
   `EventTypeName` varchar(20) NOT NULL,
@@ -128,10 +138,35 @@ INSERT INTO `tbleventtypes` (`EventTypeID`, `EventTypeName`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tbllistingplans`
+--
+
+CREATE TABLE IF NOT EXISTS `tbllistingplans` (
+  `PlanID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Name` varchar(20) NOT NULL,
+  `Description` text NOT NULL,
+  `Inclusion` text NOT NULL,
+  `Price` float NOT NULL,
+  `Currency` varchar(3) NOT NULL,
+  `Length` int(10) unsigned NOT NULL,
+  `Frequency` varchar(20) NOT NULL,
+  `PaypalButton` text NOT NULL,
+  PRIMARY KEY (`PlanID`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `tbllistingplans`
+--
+
+INSERT INTO `tbllistingplans` (`PlanID`, `Name`, `Description`, `Inclusion`, `Price`, `Currency`, `Length`, `Frequency`, `PaypalButton`) VALUES
+(1, 'Promo', 'Listing show up below paid listings.', 'One Photo Limit<br/>\r\nOne Quote Request Limit', 0, 'AED', 30, 'Days', '<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">\n<input type="hidden" name="cmd" value="_s-xclick">\n<input type="hidden" name="hosted_button_id" value="YNN5T3S5TT7P4">\n<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">\n<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">\n</form>\n');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tblmessageflags`
 --
 
-DROP TABLE IF EXISTS `tblmessageflags`;
 CREATE TABLE IF NOT EXISTS `tblmessageflags` (
   `MessageFlagID` int(2) unsigned NOT NULL AUTO_INCREMENT,
   `MessageFlagName` varchar(20) NOT NULL,
@@ -153,7 +188,6 @@ INSERT INTO `tblmessageflags` (`MessageFlagID`, `MessageFlagName`, `MessageFlagC
 -- Table structure for table `tblmessagefolders`
 --
 
-DROP TABLE IF EXISTS `tblmessagefolders`;
 CREATE TABLE IF NOT EXISTS `tblmessagefolders` (
   `MessageFolderID` int(1) unsigned NOT NULL AUTO_INCREMENT,
   `MessageFolderName` varchar(10) NOT NULL,
@@ -176,7 +210,6 @@ INSERT INTO `tblmessagefolders` (`MessageFolderID`, `MessageFolderName`) VALUES
 -- Table structure for table `tblmessages`
 --
 
-DROP TABLE IF EXISTS `tblmessages`;
 CREATE TABLE IF NOT EXISTS `tblmessages` (
   `MessageID` int(20) unsigned NOT NULL AUTO_INCREMENT,
   `MessageTypeID` int(2) unsigned NOT NULL,
@@ -189,18 +222,12 @@ CREATE TABLE IF NOT EXISTS `tblmessages` (
   PRIMARY KEY (`MessageID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Used to log user composed messages.' AUTO_INCREMENT=1 ;
 
---
--- Dumping data for table `tblmessages`
---
-
-
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `tblmessagestatus`
 --
 
-DROP TABLE IF EXISTS `tblmessagestatus`;
 CREATE TABLE IF NOT EXISTS `tblmessagestatus` (
   `MessageStatusID` int(2) unsigned NOT NULL AUTO_INCREMENT,
   `MessageStatusName` varchar(20) NOT NULL,
@@ -224,7 +251,6 @@ INSERT INTO `tblmessagestatus` (`MessageStatusID`, `MessageStatusName`) VALUES
 -- Table structure for table `tblmessagetypes`
 --
 
-DROP TABLE IF EXISTS `tblmessagetypes`;
 CREATE TABLE IF NOT EXISTS `tblmessagetypes` (
   `MessageTypeID` int(2) unsigned NOT NULL AUTO_INCREMENT,
   `MessageTypeName` varchar(50) NOT NULL,
@@ -247,7 +273,6 @@ INSERT INTO `tblmessagetypes` (`MessageTypeID`, `MessageTypeName`) VALUES
 -- Table structure for table `tblpriviledges`
 --
 
-DROP TABLE IF EXISTS `tblpriviledges`;
 CREATE TABLE IF NOT EXISTS `tblpriviledges` (
   `PriviledgeID` int(2) unsigned NOT NULL AUTO_INCREMENT,
   `PriviledgeName` varchar(20) NOT NULL,
@@ -269,7 +294,6 @@ INSERT INTO `tblpriviledges` (`PriviledgeID`, `PriviledgeName`) VALUES
 -- Table structure for table `tbluseraccountactivitylogs`
 --
 
-DROP TABLE IF EXISTS `tbluseraccountactivitylogs`;
 CREATE TABLE IF NOT EXISTS `tbluseraccountactivitylogs` (
   `DateTimeLogged` datetime NOT NULL,
   `UserAccountID` int(12) unsigned NOT NULL,
@@ -278,18 +302,12 @@ CREATE TABLE IF NOT EXISTS `tbluseraccountactivitylogs` (
   PRIMARY KEY (`DateTimeLogged`,`UserAccountID`,`ActivityID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Used to log the activities of the user';
 
---
--- Dumping data for table `tbluseraccountactivitylogs`
---
-
-
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `tbluseraccountmessages`
 --
 
-DROP TABLE IF EXISTS `tbluseraccountmessages`;
 CREATE TABLE IF NOT EXISTS `tbluseraccountmessages` (
   `UserAccountID` int(12) unsigned NOT NULL,
   `MessageID` int(20) unsigned NOT NULL,
@@ -299,28 +317,17 @@ CREATE TABLE IF NOT EXISTS `tbluseraccountmessages` (
   PRIMARY KEY (`UserAccountID`,`MessageID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Junction table for User Account and Messages to link all user messages.';
 
---
--- Dumping data for table `tbluseraccountmessages`
---
-
-
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `tbluseraccountpriviledges`
 --
 
-DROP TABLE IF EXISTS `tbluseraccountpriviledges`;
 CREATE TABLE IF NOT EXISTS `tbluseraccountpriviledges` (
   `UserAccountID` int(12) unsigned NOT NULL,
   `PriviledgeID` int(2) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`UserAccountID`,`PriviledgeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Used to link user accounts and priviledges to list all priviledges per user account.';
-
---
--- Dumping data for table `tbluseraccountpriviledges`
---
-
 
 -- --------------------------------------------------------
 
@@ -328,7 +335,6 @@ CREATE TABLE IF NOT EXISTS `tbluseraccountpriviledges` (
 -- Table structure for table `tbluseraccounts`
 --
 
-DROP TABLE IF EXISTS `tbluseraccounts`;
 CREATE TABLE IF NOT EXISTS `tbluseraccounts` (
   `UserAccountID` int(12) unsigned NOT NULL AUTO_INCREMENT,
   `FirstName` varchar(50) NOT NULL,
@@ -336,6 +342,7 @@ CREATE TABLE IF NOT EXISTS `tbluseraccounts` (
   `LastName` varchar(50) NOT NULL,
   `Address` text NOT NULL,
   `Languages` varchar(255) NOT NULL,
+  `Nationality` varchar(255) NOT NULL,
   `EmailAddress` varchar(100) NOT NULL,
   `Username` varchar(32) NOT NULL,
   `Password` varchar(64) NOT NULL,
@@ -357,17 +364,11 @@ INSERT INTO `tbluseraccounts` (`UserAccountID`, `FirstName`, `MiddleName`, `Last
 -- Table structure for table `tblvenueeventtypes`
 --
 
-DROP TABLE IF EXISTS `tblvenueeventtypes`;
 CREATE TABLE IF NOT EXISTS `tblvenueeventtypes` (
   `VenueID` int(12) unsigned NOT NULL,
   `EventTypeID` int(4) unsigned NOT NULL,
   PRIMARY KEY (`VenueID`,`EventTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Used to link a venue for an event type.';
-
---
--- Dumping data for table `tblvenueeventtypes`
---
-
 
 -- --------------------------------------------------------
 
@@ -375,7 +376,6 @@ CREATE TABLE IF NOT EXISTS `tblvenueeventtypes` (
 -- Table structure for table `tblvenuereviews`
 --
 
-DROP TABLE IF EXISTS `tblvenuereviews`;
 CREATE TABLE IF NOT EXISTS `tblvenuereviews` (
   `DateTimeLogged` datetime NOT NULL,
   `VenueID` int(12) unsigned NOT NULL,
@@ -385,18 +385,12 @@ CREATE TABLE IF NOT EXISTS `tblvenuereviews` (
   PRIMARY KEY (`DateTimeLogged`,`VenueID`,`UserAccountID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Used for customer rating of venues.';
 
---
--- Dumping data for table `tblvenuereviews`
---
-
-
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `tblvenues`
 --
 
-DROP TABLE IF EXISTS `tblvenues`;
 CREATE TABLE IF NOT EXISTS `tblvenues` (
   `VenueID` int(12) unsigned NOT NULL AUTO_INCREMENT,
   `UserAccountID` int(12) unsigned NOT NULL,
@@ -416,18 +410,12 @@ CREATE TABLE IF NOT EXISTS `tblvenues` (
   UNIQUE KEY `VenueName` (`VenueName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='List of venues.' AUTO_INCREMENT=1 ;
 
---
--- Dumping data for table `tblvenues`
---
-
-
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `tblvenuetypes`
 --
 
-DROP TABLE IF EXISTS `tblvenuetypes`;
 CREATE TABLE IF NOT EXISTS `tblvenuetypes` (
   `VenueTypeID` int(4) unsigned NOT NULL AUTO_INCREMENT,
   `VenueTypeName` varchar(20) NOT NULL,
@@ -445,3 +433,7 @@ INSERT INTO `tblvenuetypes` (`VenueTypeID`, `VenueTypeName`) VALUES
 (2, 'Garden'),
 (1, 'Hotel'),
 (4, 'Resort');
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

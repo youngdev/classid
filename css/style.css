@@ -100,6 +100,7 @@ div[sectionFor=navigation] {
 }
 
 div[sectionFor=navigation].navTop {
+	box-shadow: 0 0 2px 2px #898989;
 	position: fixed;
 	top: 0;
 	width: 100%;
@@ -109,6 +110,7 @@ div[sectionFor=navigation].navTop {
 #top-nav {
 	background: #fff;
 	border: 0;
+	margin-bottom: 10px;
 	position: relative;
 	z-index: 150;
 }
@@ -488,6 +490,11 @@ div[sectionFor=footer] {
 #user_registration input[type=email],
 #user_registration input[type=password] {
 	width: 300px;
+}
+
+.popover .alert {
+	padding: 5px;
+	font-size: 11px;
 }
 
 /* Media Queries */

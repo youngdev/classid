@@ -16,6 +16,7 @@
 					$('.pager').fadeIn();
 				}
 			});
+			
 			$(function() {
 				var defaultTop = $("div[sectionFor=navigation]").offset().top;
 				var defaultHeight = $("div[sectionFor=navigation]").height();

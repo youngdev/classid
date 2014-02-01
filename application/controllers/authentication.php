@@ -52,7 +52,7 @@ class Authentication extends CI_Controller {
 			$user_data = $this->user_model->authenticate_user($login_data);
 		}
 		
-		if($user_data){
+		if(count($user_data) > 0) {
 			$session_data = array(
 				'is_logged_in'=>true,
 				'user_account_id'=>$user_data['UserAccountID'],

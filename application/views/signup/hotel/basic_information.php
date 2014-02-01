@@ -46,7 +46,7 @@
 						<li><strong>Access to AED 5 million in event budgets each month</strong></li>
 					</ul>
 					<p>We list hotels, restaurant, villas, resorts, bars, yacths , studios,  and other unique event spaces as well as conference centers and country clubs.</p>
-					<h4 class="red">Basic Information</h4>
+					<h4 class="orange">Basic Information</h4>
 					<p><strong>Step 1 - Enter basic information about your venue. It is important to include in your description details about your venue and what makes it unique for the types of events you’d like to attract.</strong></p>
 					<div class="form-group">
 						<label class="control-label violet" for="venue_name">Venue Name <strong class="red">*</strong></label>
@@ -63,7 +63,7 @@
 						<?php echo form_error('venue_description'); ?>
 						<textarea class="form-control required" required-type="text" name="venue_description" row="5"><?php echo set_value('venue_description'); ?></textarea>
 					</div>
-					<h4 class="red">Contact &amp; Profile information</h4>
+					<h4 class="orange">Contact &amp; Profile information</h4>
 					<p><strong>Contact information is never made public on the site, 
 	it is only used to send you important updates about bookings and client
 	 leads. You would be automatically registered to Partyquire for you to monitor your listing’s inquiries.</strong>

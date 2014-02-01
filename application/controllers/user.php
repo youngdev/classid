@@ -1,7 +1,14 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class User extends Base_Controller {
-	public function __construct() {
+class User extends Base_Controller 
+{
+	/**
+	 * Constructor
+	 * - Self explanatory dude
+	 * @return null
+	 */
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		$this->load->model('user_model');
@@ -16,6 +23,11 @@ class User extends Base_Controller {
 		);
 	}
 	
+	/**
+	 * Profile
+	 * - User Profile page, with all the niff naffs with it
+	 * @return Boolean
+	 */
 	public function profile(){
 		$user_details 	= Array();
 		$venue_details	= Array();
@@ -32,6 +44,7 @@ class User extends Base_Controller {
 		if($user_id)
 		{
 			$this->vars['UserID'] = $user_id;
+			$this->vars['CurrentUserID'] = $this->session->userdata('user_account_id');
 			$user_id = base64_decode($user_id);
 			
 			// Get user details
@@ -116,35 +129,47 @@ class User extends Base_Controller {
 		return false;
 	}
 
-	public function inbox()
+	/**
+	 * Messaging module
+	 * - Includes inbox along with filtering, and message sending
+	 * @return null
+	 */
+	public function message()
 	{
-		// Get user id from session
-		$user_id = $this->session->userdata('user_account_id');
-		
-		// Get offset from uri
-		$offset = $this->input->get('page');
-
-		// Additional filters
 		$action = $this->input->get('action');
-		
-		$filter = array(
-			'Recipients'	=> $user_id,
-			'limit'			=> 10
-		);
-		
-		if($offset)
-		{
-			array_push($filter, array('offset' => $offset));
-		}
+		$filter = $this->input->get('filter');
+		$to_user = $this->input->get('user');
+		$offset = $this->input->get('page');
+		$user_id = $this->session->userdata('user_account_id');
 
-		if($action)
+		// Check if current user is to_user
+		if($user_id == $to_user)
 		{
-			array_push($filter, array('status' => $action));
-		}
+			if($action == 'message' || (!$action))
+			{
+				$args = array(
+					'Recipients'	=> $user_id,
+					'limit'			=> 10
+				);
 
-		$this->var['inbox'] = $this->user_model->get_message_details($filter);
-		
-		// Load inbox page
+				if ($offset)
+				{
+					array_push($args, array('offset' => $offset));
+				}
+
+				if ($action)
+				{
+					array_push($args, array('filter' => $action));
+				}
+
+				$this->var['inbox'] = $this->user_model->get_message_details($args);
+			}
+		}
+		// Sending message to some other guy
+		elseif($user_id && $to_user)
+		{
+			
+		}
 	}
 }
 

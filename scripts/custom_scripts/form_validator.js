@@ -2,10 +2,15 @@
 
 var REQ_TYPE_TEXT = 'text';
 var REQ_TYPE_EMAIL = 'email';
+var REQ_TYPE_FLOAT = 'float';
+var REQ_TYPE_INT = 'integer';
+var REQ_TYPE_CHK = 'checked';
 
 var TXT_ERR_EMPTY = 'Missed one!';
 var TXT_ERR_EMAIL = 'Impossible!';
 var TXT_ERR_DEP = 'Check again!';
+var TXT_ERR_NUMBER = 'Make sure!';
+var TXT_ERR_TICK = 'Oops!';
 
 var DEP_TYPE_EQUAL = 'equal';
 
@@ -42,6 +47,28 @@ var email_valid = function(elem){
 	text = $(elem).val();
 	
 	return valid_format.test(text);
+};
+
+var float_valid = function(elem){
+	
+	valid_format = /^\d*\.?\d*$/;
+	text = $(elem).val();
+	
+	return valid_format.test(text);
+};
+
+var int_valid = function(elem){
+	
+	valid_format = /^\d*$/;
+	text = $(elem).val();
+	
+	return valid_format.test(text);
+};
+
+var is_checked = function(elem){
+	
+	return $(elem).is(':checked');
+	
 };
 	
 var form_validator = function(form){
@@ -140,6 +167,90 @@ var form_validator = function(form){
 					}
 				}
 				break;
+			case REQ_TYPE_FLOAT:
+				if(text_empty(this))
+				{
+					found_error = true;
+					//create error message
+					$(error_container).append(
+							$('<strong></strong>').html(TXT_ERR_NUMBER),
+							"&nbsp;This field should not be left empty."
+						);
+					var target_container = '#'+$(this).attr('name'); //check if there are preferred container
+					if($(target_container).length)
+					{
+						$(target_container).html(error_container);
+					}
+					else
+					{
+						//if no preferred container was specified, append after the element
+						$(this).before(error_container);
+						if($(this).hasClass('form-control'))
+						{
+							if($(this).parent('.form-group').length)
+							{
+								$($(this).parent('.form-group').get(0)).addClass('has-error');
+							}
+						}
+					}
+					
+				}
+				else if(!float_valid(this))
+				{
+					found_error = true;
+					//create error message
+					$(error_container).append(
+							$('<strong></strong>').html(TXT_ERR_EMPTY),
+							"&nbsp;This field should contain a valid float number."
+						);
+					var target_container = '#'+$(this).attr('name'); //check if there are preferred container
+					if($(target_container).length)
+					{
+						$(target_container).html(error_container);
+					}
+					else
+					{
+						//if no preferred container was specified, append after the element
+						$(this).before(error_container);
+						if($(this).hasClass('form-control'))
+						{
+							if($(this).parent('.form-group').length)
+							{
+								$($(this).parent('.form-group').get(0)).addClass('has-error');
+							}
+						}
+					}
+				}
+				break;
+			case REQ_TYPE_CHK:
+				if(!is_checked(this))
+				{
+					found_error = true;
+					//create error message
+					$(error_container).append(
+							$('<strong></strong>').html(TXT_ERR_TICK),
+							"&nbsp;This field is required to proceed."
+						);
+					var target_container = '#'+$(this).attr('name'); //check if there are preferred container
+					if($(target_container).length)
+					{
+						$(target_container).html(error_container);
+					}
+					else
+					{
+						//if no preferred container was specified, append after the element
+						$(this).before(error_container);
+						if($(this).hasClass('form-control'))
+						{
+							if($(this).parent('.form-group').length)
+							{
+								$($(this).parent('.form-group').get(0)).addClass('has-error');
+							}
+						}
+					}
+					
+				}
+				break;
 		}
 	});
 	
@@ -207,6 +318,74 @@ var form_validator = function(form){
 						$($(this).parent('.form-group').get(0)).addClass('has-error');
 					}
 				}
+			}
+		}
+	});
+	
+	//run validation for "checker" fields
+	$(form).find('.checker').each(function(){
+		var type = $(this).attr('checker-type');
+		var error_container = $('<div></div>').addClass('alert alert-danger margin-bottom_10px data-validated');
+		if(!text_empty(this))
+		{
+			switch(type)
+			{
+				case REQ_TYPE_FLOAT:
+					if(!float_valid(this))
+					{
+						found_error = true;
+						//create error message
+						$(error_container).append(
+								$('<strong></strong>').html(TXT_ERR_NUMBER),
+								"&nbsp;This field should contain a valid float number."
+							);
+						var target_container = '#'+$(this).attr('name'); //check if there are preferred container
+						if($(target_container).length)
+						{
+							$(target_container).html(error_container);
+						}
+						else
+						{
+							//if no preferred container was specified, append after the element
+							$(this).before(error_container);
+							if($(this).hasClass('form-control'))
+							{
+								if($(this).parent('.form-group').length)
+								{
+									$($(this).parent('.form-group').get(0)).addClass('has-error');
+								}
+							}
+						}
+					}
+					break;
+				case REQ_TYPE_INT:
+					if(!int_valid(this))
+					{
+						found_error = true;
+						//create error message
+						$(error_container).append(
+								$('<strong></strong>').html(TXT_ERR_EMPTY),
+								"&nbsp;This field should contain a valid integer number."
+							);
+						var target_container = '#'+$(this).attr('name'); //check if there are preferred container
+						if($(target_container).length)
+						{
+							$(target_container).html(error_container);
+						}
+						else
+						{
+							//if no preferred container was specified, append after the element
+							$(this).before(error_container);
+							if($(this).hasClass('form-control'))
+							{
+								if($(this).parent('.form-group').length)
+								{
+									$($(this).parent('.form-group').get(0)).addClass('has-error');
+								}
+							}
+						}
+					}
+					break;
 			}
 		}
 	});

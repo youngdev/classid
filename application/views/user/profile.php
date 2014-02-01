@@ -50,11 +50,13 @@
 						Speaks: <?php echo $Languages; ?>
 					</div>
 				</div>
+				<?php if($CurrentUserID != base64_decode($UserID)) : echo $CurrentUserID;?>
 				<div class="row">
 					<div class="col-md-12">
 						<a href="<?php echo $base_url; ?>user/messageme/<?php echo $UserID; ?>">Message Me</a>
 					</div>
 				</div>
+				<?php endif; ?>
 			</div>
 		</div>
 		<div class="row" id="statistics">
@@ -93,7 +95,7 @@
 				<?php endforeach; ?>
 				<?php if(count($VenuesViewed) == 0) : ?>
 					<div class="col-md-12 text-center">
-						No Viewed Venues yet
+						<span>No Viewed Venues yet</span>
 					</div>
 				<?php endif; ?>
 			</div>
