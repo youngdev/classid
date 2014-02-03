@@ -67,18 +67,18 @@ class User_model extends CI_Model {
 		$query = '';
 		
 		$this->db->select('*');
+		$this->db->from('tbluseraccounts');
+		$this->db->join('tbluseraccountpriviledges', 'tbluseraccountpriviledges.UserAccountID = tbluseraccounts.UserAccountID', 'left');
+		$this->db->join('tblpriviledges', 'tbluseraccountpriviledges.PriviledgeID = tblpriviledges.PriviledgeID', 'left');
+		$this->db->group_by('tbluseraccounts.UserAccountID');
 		
 		if(is_array($args))
 		{
+
 			$this->db->where($args);
 		}
-		else 
-		{
-			return array();
-		}
-		
-		$query = $this->db->get('tbluseraccounts');
-		
+
+		$query = $this->db->get();
 		return $query->result_array();
 	}
 	
@@ -94,17 +94,13 @@ class User_model extends CI_Model {
 			if(isset($args['ActivityName']))
 			{
 				// Join with Message Types table
-				$this->db->join('tblactivities', 'tblactivities.ActivityID = useractivity.ActivityID');
+				$this->db->join('tblactivities', 'tblactivities.ActivityID = useractivity.ActivityID', 'left');
 				$this->db->where('tblactivities.ActivityName', $args['ActivityName']);
 				
 				unset($args['ActivityName']);
 			}
 
 			$this->db->where($args);
-		}
-		else 
-		{
-			return array();
 		}
 		
 		$query = $this->db->get();
@@ -130,10 +126,6 @@ class User_model extends CI_Model {
 				$this->db->where($args);
 			}
 		}
-		else
-		{
-			return array();
-		}
 
 		$query = $this->db->get();
 
@@ -153,7 +145,7 @@ class User_model extends CI_Model {
 			if(isset($args['MessageType']))
 			{
 				// Join with Message Types table
-				$this->db->join('tblmessagetypes', 'tblmessages.MessageTypeID = tblmessagetypes.MessageTypeID');
+				$this->db->join('tblmessagetypes', 'tblmessages.MessageTypeID = tblmessagetypes.MessageTypeID', 'left');
 				$this->db->where('tblmessagetypes.MessageTypeName', $arg['MessageType']);
 				
 				unset($args['MessageType']);
@@ -163,7 +155,7 @@ class User_model extends CI_Model {
 			if(isset($args['MessageStatus']))
 			{
 				// Join with Message Status table
-				$this->db->join('tbluseraccountmessages', 'tblmessages.MessageID = tbluseraccountmessages.MessageID');
+				$this->db->join('tbluseraccountmessages', 'tblmessages.MessageID = tbluseraccountmessages.MessageID', 'left');
 				$this->db->where('tbluseraccountmessages.MessageStatusID', $args['MessageStatus']);
 
 				unset($args['MessageStatus']);
@@ -186,14 +178,42 @@ class User_model extends CI_Model {
 
 			$this->db->where($args);
 		}
-		else 
-		{
-			return array();
-		}
 		
 		$query = $this->db->get();
 		
 		return $query->result_array();
+	}
+
+	public function get_message_types($args = '')
+	{
+		$query = '';
+
+		$this->db->select('*');
+		$this->db->from('tblmessagetypes');
+
+		if(is_array($args))
+		{
+			$this->db->where($args);
+		}
+
+		$query = $this->db->get();
+
+		return $query->result_array();
+	}
+
+	public function save_message($args = '')
+	{
+		if(is_array($args))
+		{
+			$this->db->insert('tblmessages', $args);
+
+			if($this->db->affected_rows() > 0)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
 

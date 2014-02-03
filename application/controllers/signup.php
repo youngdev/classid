@@ -12,6 +12,7 @@ class Signup extends Base_Controller {
 	private $venue_details_rules;
 	private $insert_photos_rules;
 	private $payment_rules;
+	private $user_registration_rules;
 
 	public function __construct (){
 		parent::__construct();
@@ -129,6 +130,48 @@ class Signup extends Base_Controller {
 						'label'=>'Personal Email',
 						'rules'=>'trim|required|valid_email'
 					)
+			);
+		$this->user_registration_rules = array(
+				array(
+					'field'=>'firstname',
+					'label'=>'First Name',
+					'rules'=>'trim|required'
+				),
+				array(
+					'field'=>'middlename',
+					'label'=>'Middle Name',
+					'rules'=>'trim|required'
+				),
+				array(
+					'field'=>'lastname',
+					'label'=>'Last Name',
+					'rules'=>'trim|required'
+				),
+				array(
+					'field'=>'email',
+					'label'=>'Email',
+					'rules'=>'trim|required|valid_email'
+				),
+				array(
+					'field'=>'password',
+					'label'=>'Password',
+					'rules'=>'trim|required|md5'
+				),
+				array(
+					'field'=>'confirm_password',
+					'label'=>'Re-enter Password',
+					'rules'=>'trim|required|matches[password]|md5'
+				),
+				array(
+					'field'=>'address',
+					'label'=>'Address',
+					'rules'=>'trim|required'
+				),
+				array(
+					'field'=>'nationality',
+					'label'=>'Nationality',
+					'rules'=>'trim|required'
+				)
 			);
 	}
 	
@@ -428,51 +471,8 @@ class Signup extends Base_Controller {
 	}	
 
 	private function user_registration(){
-		// Let's reuse rules variable used by hotel signup instead of creating a new variable
-		$this->basic_information_rules = array(
-			array(
-				'field'=>'firstname',
-				'label'=>'First Name',
-				'rules'=>'trim|required'
-			),
-			array(
-				'field'=>'middlename',
-				'label'=>'Middle Name',
-				'rules'=>'trim|required'
-			),
-			array(
-				'field'=>'lastname',
-				'label'=>'Last Name',
-				'rules'=>'trim|required'
-			),
-			array(
-				'field'=>'email',
-				'label'=>'Email',
-				'rules'=>'trim|required|valid_email'
-			),
-			array(
-				'field'=>'password',
-				'label'=>'Password',
-				'rules'=>'trim|required|md5'
-			),
-			array(
-				'field'=>'confirm_password',
-				'label'=>'Re-enter Password',
-				'rules'=>'trim|required|matches[password]|md5'
-			),
-			array(
-				'field'=>'address',
-				'label'=>'Address',
-				'rules'=>'trim|required'
-			),
-			array(
-				'field'=>'nationality',
-				'label'=>'Nationality',
-				'rules'=>'trim|required'
-			)
-		);
-	
-		$this->form_validation->set_rules($this->basic_information_rules);
+		// And let there be form validation
+		$this->form_validation->set_rules($this->user_registration_rules);
 		
 		// Run for PHP validation
 		if($this->form_validation->run() == FALSE)

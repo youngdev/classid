@@ -497,6 +497,35 @@ div[sectionFor=footer] {
 	font-size: 11px;
 }
 
+#messaging .row {
+	margin-bottom: 10px;
+}
+
+#messaging select {
+	max-width: 300px;
+}
+
+#messaging div[sectionFor=quotation] div[sectionFor=duration] div:nth-child(2) {
+	padding-right: 0px;
+}
+
+#messaging div[sectionFor=quotation] div[sectionFor=duration] div:nth-child(3) {
+	padding-left: 0px;
+}
+
+#messaging div[sectionFor=quotation] div[sectionFor=duration] div:nth-child(2) input:nth-child(1) {
+	float: left;
+	width: 88%;
+}
+
+#messaging div[sectionFor=quotation] div[sectionFor=duration] div:nth-child(2) div {
+	float: left;
+	margin-top: 10px;
+	margin-left: 4px;
+	font-size: 11px;
+	text-align: center;
+}
+
 /* Media Queries */
 @media (min-width: 768px) {
 	.main-navbar-title {

@@ -53,7 +53,7 @@
 				<?php if($CurrentUserID != base64_decode($UserID)) : echo $CurrentUserID;?>
 				<div class="row">
 					<div class="col-md-12">
-						<a href="<?php echo $base_url; ?>user/messageme/<?php echo $UserID; ?>">Message Me</a>
+						<a href="<?php echo $base_url; ?>user/message?u=<?php echo $UserID; ?>">Message Me</a>
 					</div>
 				</div>
 				<?php endif; ?>
