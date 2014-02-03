@@ -47,7 +47,7 @@
 			<div class="col-md-10 col-md-offset-1">
 				<form action="<?php echo $base_url; ?>user/message?u=<?php echo $UserID; ?>" method="POST">
 					<div class="row" sectionFor="message">
-						<textarea class="form-control required" required-type="text" placeholder="Enter your message here"></textarea>
+						<textarea class="form-control required" name="message" required-type="text" placeholder="Enter your message here"></textarea>
 					</div>
 					<div class="row text-right">
 						<button type="submit" class="btn btn-primary">Send</button>
