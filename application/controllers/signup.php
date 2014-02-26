@@ -7,6 +7,8 @@ class Signup extends Base_Controller {
 	const INSERT_PHOTOS 		= 'insert_photos';
 	const PAYMENT 				= 'payment';
 	
+	const COUNTRY_AE		= 'ae';
+
 	private $basic_information_rules;
 	private $listing_plan_rules;
 	private $venue_details_rules;
@@ -87,15 +89,20 @@ class Signup extends Base_Controller {
 						'rules'=>'trim|required|numeric'
 					),
 				array(
-						'field'=>'event[]',
-						'label'=>'Event',
+						'field'=>'maximum',
+						'label'=>'Maximum',
 						'rules'=>'trim|numeric'
 					),
 				array(
-						'field'=>'amenity[]',
-						'label'=>'Amenity',
-						'rules'=>'trim|numeric'
-					),
+                                               	'field'=>'event[]',
+                                               	'label'=>'Event',
+                                               	'rules'=>'trim|numeric'
+                                       ),
+                               array(
+                                        	'field'=>'amenity[]',
+                                               	'label'=>'Amenity',
+                                               	'rules'=>'trim|numeric'
+                                        ),
 				array(
 						'field'=>'square_footage',
 						'label'=>'Square Footage',
@@ -216,6 +223,7 @@ class Signup extends Base_Controller {
 		//Run for PHP validation
 		if($this->form_validation->run() == FALSE)
 		{
+			$this->vars['venue_types'] = $this->hotel_model->venue_types();
 			$this->load->view('signup/hotel/basic_information',$this->vars);
 		}
 		else
@@ -223,14 +231,14 @@ class Signup extends Base_Controller {
 			//save details ...
 			$details = array(
 					'venue_name' => $this->input->post('venue_name'),
-					'venue_details' => $this->input->post('venue_type'),
+					'venue_type' => $this->input->post('venue_type'),
 					'venue_description' => $this->input->post('venue_description'),
 					'name' => $this->input->post('name'),
 					'email' => $this->input->post('email'),
 					'contact_no' => $this->input->post('contact_no'),
 					'password'=> $this->input->post('password')
 				);
-			$this->session->set_userdata(self::BASIC_INFORMATION);
+			$this->session->set_userdata(self::BASIC_INFORMATION,serialize($details));
 			//if form was successfully validated
 			redirect('signup/index?t='.P_SIGNUP_HOTEL.'&p='.self::LISTING_PLAN);
 		}
@@ -251,7 +259,7 @@ class Signup extends Base_Controller {
 			$details = array(
 					'plan' => $this->input->post('plan')
 				);
-			$this->session->set_userdata(self::LISTING_PLAN,$details);
+			$this->session->set_userdata(self::LISTING_PLAN,serialize($details));
 			//if form was successfully validation
 			redirect('signup/index?t='.P_SIGNUP_HOTEL.'&p='.self::VENUE_DETAILS);
 		}
@@ -265,6 +273,7 @@ class Signup extends Base_Controller {
 		{
 			$this->vars['events'] = $this->hotel_model->event_types();
 			$this->vars['amenities'] = $this->hotel_model->amenities();
+			$this->vars['cities'] = $this->hotel_model->cities(false,self::COUNTRY_AE);
 			$this->load->view('signup/hotel/venue_details',$this->vars);
 		}
 		else 
@@ -274,12 +283,13 @@ class Signup extends Base_Controller {
 					'street' => $this->input->post('street'),
 					'city' => $this->input->post('city'),
 					'minimum' => $this->input->post('minimum'),
+					'maximum' => $this->input->post('maximum'),
 					'event' => $this->input->post('event'),
 					'amenity' => $this->input->post('amenity'),
 					'square_footage' => $this->input->post('square_footage'),
 					'max_occupancy' => $this->input->post('max_occupancy'),
 				);
-			$this->session->set_userdata(self::VENUE_DETAILS,$details);
+			$this->session->set_userdata(self::VENUE_DETAILS,serialize($details));
 			//if form was successfully validation
 			redirect('signup/index?t='.P_SIGNUP_HOTEL.'&p='.self::INSERT_PHOTOS);
 		}
@@ -300,7 +310,7 @@ class Signup extends Base_Controller {
 			$details = array(
 					'photos' => $this->input->post('images')
 				);
-			$this->session->set_userdata(self::INSERT_PHOTOS,$details);
+			$this->session->set_userdata(self::INSERT_PHOTOS,serialize($details));
 			//if form was successfully validation
 			redirect('signup/index?t='.P_SIGNUP_HOTEL.'&p='.self::PAYMENT);
 		}
@@ -312,21 +322,64 @@ class Signup extends Base_Controller {
 		//Run for PHP validation
 		if($this->form_validation->run() == false)
 		{
-			$listing_plan_details = $this->session->userdata(self::LISTING_PLAN);
+			$listing_plan_details = unserialize($this->session->userdata(self::LISTING_PLAN));
 			$listing_plan = $this->hotel_model->listing_plans($listing_plan_details['plan']);
 			$this->vars['listing_plan_details'] = $listing_plan[0];
 			$this->load->view('signup/hotel/payment',$this->vars);
 		}
 		else
 		{
+			$this->load->model('User_model');
 			//save to database ...
-			$basic_information = $this->session->userdata(self::BASIC_INFORMATION);
-			$venue_details = $this->session->userdata(self::VENUE_DETAILS);
-			$listing_plan = $this->session->userdata(self::LISTING_PLAN);
-			$photos = $this->session->userdata(self::INSERT_PHOTOS);
-			$payment = $this->session->userdata(self::PAYMENT);
+			$basic_information = unserialize($this->session->userdata(self::BASIC_INFORMATION));
+			$venue_details = unserialize($this->session->userdata(self::VENUE_DETAILS));
+			$listing_plan = unserialize($this->session->userdata(self::LISTING_PLAN));
+			$photos = unserialize($this->session->userdata(self::INSERT_PHOTOS));
+//			$payment = $this->session->userdata(self::PAYMENT);
+			//echo var_dump($basic_information);
+			//echo var_dump($this->input->post());
+			$user_info = array(
+					'FirstName'=>$this->input->post('first_name'), //use details entered during payment
+					'LastName'=>$this->input->post('last_name'), //use details entered during payment
+					'Address'=>'', //no source yet
+					'Languages'=>'English', //use it as default language
+					'EmailAddress'=>$this->input->post('personal_email'), //use details entered during payment, since this is about the user
+					'Username'=>$this->input->post('personal_email'),
+					'Password'=>$basic_information['password'],
+					'Type'=>P_TYPE_HOTEL
+				);
+			$user_id = $this->User_model->save_user($user_info); //create user
+
+			$venue = array(
+					'UserAccountID'=>$user_id,
+					'VenueTypeID'=>$venue_details['venue_type'],
+					'CityID'=>$venue_details['city'],
+					'VenueName'=>$basic_information['venue_name'],
+					'Location'=>$venue_details['street'],
+					'LocationMap'=>null, //no source yet
+					'MaximumOccupancy'=>$venue_details['max_occupancy'],
+					'MinimumBookingRequired'=>0, //no source yet
+					'Ammenities'=>'', //in a separate table
+					'VenueDescription'=>$basic_information['venue_description'],
+					'DepositAndFees'=>0, //no source yet
+					'MinimumPackageRate'=>$venue_details['minimum'],
+					'MaximumPackageRate'=>$venue_details['maximum']
+				);
+			$venue_id = $this->hotel_model->save_venue($venue); //create the venue
 			
-			
+			if($venue_id)
+			{
+				$this->hotel_model->save_amenities($venue_id,$venue_details['amenity']);
+			}
+
+			$payment = array(
+					'VenueID'=>$venue_id,
+					'FirstName'=>$this->input->post('first_name'),
+					'LastName'=>$this->input->post('last_name'),
+					'Email'=>$this->input->post('personal_email'),
+					'PlanID'=>$listing_plan['plan']
+				);
+			$this->hotel_model->save_payment($payment);
 		}
 	}
 	

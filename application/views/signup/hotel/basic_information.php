@@ -56,7 +56,12 @@
 					<div class="form-group">
 						<label class="control-label violet" for="venue_type">Venue Type <strong class="red">*</strong></label>
 						<?php echo form_error('venue_type'); ?>
-						<input type="text" class="form-control required" required-type="text" name="venue_type" value="<?php echo set_value('venue_type'); ?>"/>
+						<select name="venue_type" class="form-control required" required-type="text">
+							<option value="">--</option>
+							<?php foreach($venue_types as $venue_type){ ?>
+								<option value="<?php echo $venue_type['VenueTypeID']; ?>" <?php echo set_select("venue_type",$venue_type['VenueTypeID']); ?>><?php echo $venue_type['VenueTypeName']; ?></option>
+							<?php } ?>
+						</select>
 					</div>
 					<div class="form-group">
 						<label class="control-label violet" for="venue_description">Description (Provide a detail description of your venue) <strong class="red">*</strong></label>
