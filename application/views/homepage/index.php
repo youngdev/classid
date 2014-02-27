@@ -223,8 +223,13 @@
 				<div id="list_signin">
 					<a href="<?php echo site_url('signup/index?t='.P_SIGNUP_HOTEL); ?>" class="btn white" id="btn_list">List your Venue</a>
 					<span id="signin_link">
+					<?php if (!$is_logged_in) : ?>
 						<a href="#" id="signin">Sign in</a> | <a href="#" id="register">Register</a>
+					<?php else: ?>
+						<a href="<?php echo $base_url; ?>authentication/logout" id="signout">Sign Out</a>
+					<?php endif; ?>
 					</span>
+
 				</div>
 				<div class="search_block">
 					<div class="col-md-4"><img src="images/search_icon.png"><span id="search_text">Search</span></div>

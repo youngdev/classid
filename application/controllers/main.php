@@ -4,6 +4,8 @@ class Main extends Base_Controller {
 
 	public function __construct (){
 		parent::__construct();
+		// Get session
+		$this->vars['is_logged_in']  = $this->session->userdata('is_logged_in');
 	}
 	
 	public function index(){

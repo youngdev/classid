@@ -38,17 +38,7 @@
 				</ul>
 			</div>
 		</div>
-		<div class="row">
-			<div class="col-md-12">
-				<h3>Message <?php echo $RecipientName; ?></h3>
-			</div>
-			<?php if($UserDetails[0]['PriviledgeName'] == 'Administrator'): ?>
-			<div class="col-md-12">
-				<em>Ask the owner if you have a specific question about their venue</em>
-			</div>
-			<?php endif; ?>
-		</div>
-		<div class="row" id="messaging">
+		<div class="row" id="quotation">
 			<div class="col-md-10 col-md-offset-1">
 				<form action="<?php echo $base_url; ?>user/message?u=<?php echo $UserID; ?>" method="POST">
 					<div class="row" sectionFor="message">

@@ -1,16 +1,16 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class User extends Base_Controller 
+class User extends Base_Controller
 {
 	/**
 	 * Constructor
 	 * - Self explanatory dude
 	 * @return null
 	 */
-	public function __construct() 
+	public function __construct()
 	{
 		parent::__construct();
-		
+
 		$this->load->model('user_model');
 		$this->load->helper(array('file', 'directory'));
 
@@ -22,7 +22,7 @@ class User extends Base_Controller
 			'Meetings Venue Packages'=> ''
 		);
 	}
-	
+
 	/**
 	 * Profile
 	 * - User Profile page, with all the niff naffs with it
@@ -37,19 +37,19 @@ class User extends Base_Controller
 			'ViewedVenue'	=> Array(),
 			'BookedVenue'	=> Array(),
 		);
-		
+
 		// Get URI
 		$user_id = $this->uri->segment(3);
-		
+
 		if($user_id)
 		{
 			$this->vars['UserID'] = $user_id;
 			$this->vars['CurrentUserID'] = $this->session->userdata('user_account_id');
 			$user_id = base64_decode($user_id);
-			
+
 			// Get user details
 			$user_details = $this->user_model->get_user_details(array('tbluseraccounts.UserAccountID'=>$user_id));
-			
+
 			if (count($user_details) > 0)
 			{
 				// Get messages details
@@ -57,13 +57,13 @@ class User extends Base_Controller
 					'ActivityName'	=> 'Requested Quotation',
 					'UserAccountID'	=> $user_id
 				));
-				
+
 				// Get venues viewed
 				$activities['ViewedVenue'] = $this->user_model->get_activity_details(array(
 					'ActivityName'	=> 'View Venue Details',
 					'UserAccountID'	=> $user_id
 				));
-				
+
 				// Get venues booked
 				$activities['BookedVenue'] = $this->user_model->get_activity_details(array(
 					'ActivityName'	=> 'Book Venue',
@@ -86,7 +86,7 @@ class User extends Base_Controller
 				{
 					$this->vars['ProfileImage'] = base_url() . 'images/default.png';
 				}
-				
+
 				if(count($user_details) > 0)
 				{
 					$this->vars['Name']			= $user_details[0]['FirstName'].' '.$user_details[0]['MiddleName'].' '.$user_details[0]['LastName'];
@@ -126,7 +126,7 @@ class User extends Base_Controller
 				return true;
 			}
 		}
-		
+
 		// Redirect to Error 404
 		show_404('page');
 		return false;
@@ -221,6 +221,12 @@ class User extends Base_Controller
 				redirect('/main', 'refresh');
 			}
 		}
+	}
+
+	public function test_page()
+	{
+		// Insert view here :D
+		$this->load->view('user/quote', $this->vars);
 	}
 }
 

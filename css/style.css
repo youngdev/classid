@@ -449,7 +449,7 @@ div[sectionFor=footer] {
 
 #profile #viewed_venues .venues:last-child {
 	margin-right: 0px;
-} 
+}
 
 #profile #viewed_venues .venues .image img {
 	margin: 0px;
@@ -505,6 +505,15 @@ div[sectionFor=footer] {
 	max-width: 300px;
 }
 
+#messaging div[sectionFor=message] {
+	margin-top: 20px;
+}
+
+#messaging div[sectionFor=message] textarea {
+	min-height: 100px;
+	max-width: 100%;
+}
+
 #messaging div[sectionFor=quotation] div[sectionFor=duration] div:nth-child(2) {
 	padding-right: 0px;
 }
@@ -549,7 +558,7 @@ div[sectionFor=footer] {
   .title-area {
 	display: none !important;
   }
-  
+
   .container_top {
 	margin: 0;
   }

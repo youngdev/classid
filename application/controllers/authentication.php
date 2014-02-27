@@ -6,24 +6,24 @@ class Authentication extends CI_Controller {
 		parent::__construct();
 		$this->load->model('user_model');
 	}
-	
+
 	function md5_generator ($string){
 		echo md5($string);
 	}
-	
+
 	function login(){
 		$user_data	= false;
 		$username	= $this->input->post('email');
 		$password	= md5($this->input->post('password'));
 		$is_social	= $this->input->post('is_social');
-		
+
 		if ($is_social)
 		{
 			// Check if email exists in database
 			$userdata = $this->user_model->get_user_details(array(
 				'EmailAddress'	=>	$this->input->post('email')
 			));
-			
+
 			if(count($userdata) > 0)
 			{
 				$userdata = $userdata[0];
@@ -35,11 +35,11 @@ class Authentication extends CI_Controller {
 				{
 					$this->output->set_output(json_encode(array('status'=>false, 'redirect'=>base_url().'signup?t=user')));
 				}
-				else 
+				else
 				{
 					redirect('/signup?t=user', 'refresh');
 				}
-				
+
 				return false;
 			}
 		}
@@ -51,7 +51,7 @@ class Authentication extends CI_Controller {
 			);
 			$user_data = $this->user_model->authenticate_user($login_data);
 		}
-		
+
 		if(count($user_data) > 0) {
 			$session_data = array(
 				'is_logged_in'=>true,
@@ -78,7 +78,7 @@ class Authentication extends CI_Controller {
 		{
 			$this->output->set_output(json_encode(array('status'=>false)));
 		}
-		
+
 		return false;
 	}
 
