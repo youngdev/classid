@@ -45,7 +45,12 @@
 					</div>
 					<div class="form-group">
 						<?php echo form_error('city'); ?>
-						<input type="text" class="form-control required" required-type="text" name="city" placeholder="City/Emirate" value="<?php echo set_value('city'); ?>"/>
+						<select class="form-control required" required-type="text" name="city">
+							<option value=""> -- </option>
+							<?php foreach($cities as $city){ ?>
+								<option value="<?php echo $city['CityID']; ?>" <?php echo set_select("city",$city['CityID']); ?>><?php echo $city['City']; ?></option>
+							<?php } ?>
+						</select>
 					</div>
 				</div>
 			</div>
